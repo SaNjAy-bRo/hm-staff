@@ -1,32 +1,50 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section id="home" className="relative flex flex-col bg-[#9bcde6]">
-      {/* Top section with full-cover image */}
-      <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px]">
+    <section id="home" className="relative flex items-center justify-center min-h-[100dvh] pt-20 overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
         <Image
-          src="/hero-cutout.png"
-          alt="Diverse professional workforce"
+          src="/office-bg.png"
+          alt="Modern Corporate Office Background"
           fill
           priority
-          className="object-cover object-[center_25%]"
+          className="object-cover object-center"
         />
-        {/* Subtle dark gradient at the very top so the white navbar text is always readable */}
-        <div className="absolute top-0 left-0 w-full h-28 bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
+        {/* Proper dark overlay so text is readable */}
+        <div className="absolute inset-0 bg-[#0a0f1c]/75 backdrop-blur-[2px]"></div>
       </div>
 
-      {/* Bottom text banner with gradient */}
-      <div className="relative bg-gradient-to-r from-sky-400 to-sky-500 py-12 lg:py-16 px-6 shadow-inner z-10">
-        <div className="max-w-5xl mx-auto text-center">
-          <h1 className="font-[var(--font-jakarta)] text-2xl sm:text-3xl lg:text-4xl font-bold text-white italic leading-snug mb-4 tracking-wide shadow-sm">
-            Cutting Edge In Innovation And Technology With Diverse Workforce
-          </h1>
-          <p className="text-sky-50 text-sm sm:text-base max-w-3xl mx-auto leading-relaxed font-medium">
-            <strong className="text-white">HM Tech Staffing</strong> provides a
-            complete spectrum of end-to-end staffing services for global
-            corporations to stay ahead in today&apos;s dynamic environment.
-          </p>
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 text-center flex flex-col items-center">
+        
+        {/* Main Heading */}
+        <h1 className="font-[var(--font-jakarta)] text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1] mb-6 drop-shadow-sm">
+          Strategic Staffing For <br className="hidden md:block"/>
+          <span className="text-blue-400">Global Innovators</span>
+        </h1>
+        
+        {/* 2-line subheading */}
+        <p className="text-base sm:text-lg lg:text-xl text-slate-200 max-w-4xl w-[95%] mx-auto font-light leading-relaxed mb-10 drop-shadow-sm" style={{ textWrap: 'balance' }}>
+          We provide an elite spectrum of end-to-end workforce solutions, accelerating global corporations in today&apos;s dynamic environment. Partner with us to secure top 1% tech talent that drives real impact.
+        </p>
+        
+        {/* Centered Buttons */}
+        <div className="flex flex-col sm:flex-row items-center gap-5 justify-center w-full">
+          <Link 
+            href="/about/overview" 
+            className="px-8 py-4 w-full sm:w-auto min-w-[220px] rounded-md bg-blue-600 text-white font-semibold tracking-wide hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20 text-center"
+          >
+            Discover Our Expertise
+          </Link>
+          
+          <button 
+            type="button"
+            className="px-8 py-4 w-full sm:w-auto min-w-[220px] rounded-md bg-white/10 text-white font-semibold tracking-wide border border-white/20 hover:bg-white/20 hover:border-white/30 backdrop-blur-md transition-colors text-center shadow-lg"
+          >
+            Explore Opportunities
+          </button>
         </div>
       </div>
     </section>
