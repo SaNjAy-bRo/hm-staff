@@ -10,8 +10,8 @@ export default function DashboardClient({ initialJoinData, initialContactData })
   const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const filteredJoin = initialJoinData.filter(sub => {
-    const matchRole = roleFilter === "" || (sub.desiredRole && sub.desiredRole.toLowerCase().includes(roleFilter.toLowerCase()));
-    const matchEdu = educationFilter === "" || (sub.education && sub.education.toLowerCase().includes(educationFilter.toLowerCase()));
+    const matchRole = roleFilter === "" || (sub.desiredRole && sub.desiredRole === roleFilter);
+    const matchEdu = educationFilter === "" || (sub.education && sub.education === educationFilter);
     return matchRole && matchEdu;
   });
 
@@ -36,21 +36,44 @@ export default function DashboardClient({ initialJoinData, initialContactData })
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="p-6 border-b border-slate-200 bg-slate-50 flex flex-col md:flex-row gap-4 items-center justify-between">
             <h2 className="text-lg font-bold text-slate-800">Applications</h2>
-            <div className="flex gap-4 w-full md:w-auto">
-              <input 
-                type="text" 
-                placeholder="Filter by Role..." 
+            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+              <select 
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="px-4 py-2 border border-slate-200 rounded-md outline-none focus:border-sky-500 text-sm w-full md:w-48"
-              />
-              <input 
-                type="text" 
-                placeholder="Filter by Qualification..." 
+                className="px-4 py-2 border border-slate-200 rounded-md outline-none focus:border-sky-500 text-sm w-full md:w-56 bg-white"
+              >
+                <option value="">All Roles</option>
+                <option value="Frontend Developer">Frontend Developer</option>
+                <option value="Backend Developer">Backend Developer</option>
+                <option value="Full Stack Developer">Full Stack Developer</option>
+                <option value="Mobile Developer">Mobile Developer</option>
+                <option value="DevOps Engineer">DevOps Engineer</option>
+                <option value="Cloud Architect">Cloud Architect</option>
+                <option value="QA Engineer">QA Engineer</option>
+                <option value="Data Scientist / Engineer">Data Scientist / Engineer</option>
+                <option value="UI/UX Designer">UI/UX Designer</option>
+                <option value="Product Manager">Product Manager</option>
+                <option value="Business Analyst">Business Analyst</option>
+                <option value="System Administrator">System Administrator</option>
+                <option value="IT Support / Helpdesk">IT Support / Helpdesk</option>
+                <option value="Other">Other</option>
+              </select>
+              
+              <select 
                 value={educationFilter}
                 onChange={(e) => setEducationFilter(e.target.value)}
-                className="px-4 py-2 border border-slate-200 rounded-md outline-none focus:border-sky-500 text-sm w-full md:w-48"
-              />
+                className="px-4 py-2 border border-slate-200 rounded-md outline-none focus:border-sky-500 text-sm w-full md:w-56 bg-white"
+              >
+                <option value="">All Qualifications</option>
+                <option value="High School / GED">High School / GED</option>
+                <option value="Associate Degree">Associate Degree</option>
+                <option value="Bachelor's Degree">Bachelor's Degree</option>
+                <option value="Master's Degree">Master's Degree</option>
+                <option value="Ph.D. / Doctorate">Ph.D. / Doctorate</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Certification Program">Certification Program</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -71,7 +94,9 @@ export default function DashboardClient({ initialJoinData, initialContactData })
                       <div className="font-medium text-slate-900">{sub.firstName} {sub.lastName}</div>
                       <div className="text-slate-500 text-xs">{sub.email}</div>
                     </td>
-                    <td className="px-6 py-4">{sub.desiredRole || "N/A"}</td>
+                    <td className="px-6 py-4">
+                      {sub.desiredRole === "Other" && sub.otherRole ? `Other (${sub.otherRole})` : (sub.desiredRole || "N/A")}
+                    </td>
                     <td className="px-6 py-4">{sub.experience} yrs</td>
                     <td className="px-6 py-4">{sub.education || "N/A"}</td>
                     <td className="px-6 py-4 text-right">
@@ -158,7 +183,7 @@ export default function DashboardClient({ initialJoinData, initialContactData })
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-800 mb-3 border-b pb-2">Job Preferences</h4>
-                    <p><span className="text-slate-500 w-24 inline-block">Role:</span> {selectedSubmission.data.desiredRole}</p>
+                    <p><span className="text-slate-500 w-24 inline-block">Role:</span> {selectedSubmission.data.desiredRole === "Other" && selectedSubmission.data.otherRole ? `Other (${selectedSubmission.data.otherRole})` : selectedSubmission.data.desiredRole}</p>
                     <p><span className="text-slate-500 w-24 inline-block">Type:</span> {selectedSubmission.data.employmentType}</p>
                     <p><span className="text-slate-500 w-24 inline-block">Model:</span> {selectedSubmission.data.workModel}</p>
                     <p><span className="text-slate-500 w-24 inline-block">Expected:</span> {selectedSubmission.data.expectedComp}</p>

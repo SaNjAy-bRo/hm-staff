@@ -4,6 +4,7 @@ import PageHero from "@/app/components/PageHero";
 
 export default function JoinUs() {
   const [status, setStatus] = useState(null);
+  const [selectedRole, setSelectedRole] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -193,7 +194,17 @@ export default function JoinUs() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-slate-700">Highest Level of Education <span className="text-red-500">*</span></label>
-                      <input name="education" type="text" placeholder="Degree, Major, Institution" required className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all" />
+                      <select name="education" required className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all">
+                        <option value="">Select highest education</option>
+                        <option value="High School / GED">High School / GED</option>
+                        <option value="Associate Degree">Associate Degree</option>
+                        <option value="Bachelor's Degree">Bachelor's Degree</option>
+                        <option value="Master's Degree">Master's Degree</option>
+                        <option value="Ph.D. / Doctorate">Ph.D. / Doctorate</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Certification Program">Certification Program</option>
+                        <option value="Other">Other</option>
+                      </select>
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <label className="text-sm font-medium text-slate-700">Primary Core Skills & Technologies <span className="text-red-500">*</span></label>
@@ -219,8 +230,36 @@ export default function JoinUs() {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-slate-700">Desired Role / Job Title <span className="text-red-500">*</span></label>
-                      <input name="desiredRole" type="text" required className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all" />
+                      <select 
+                        name="desiredRole" 
+                        required 
+                        value={selectedRole}
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                        className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all"
+                      >
+                        <option value="">Select a role</option>
+                        <option value="Frontend Developer">Frontend Developer</option>
+                        <option value="Backend Developer">Backend Developer</option>
+                        <option value="Full Stack Developer">Full Stack Developer</option>
+                        <option value="Mobile Developer">Mobile Developer</option>
+                        <option value="DevOps Engineer">DevOps Engineer</option>
+                        <option value="Cloud Architect">Cloud Architect</option>
+                        <option value="QA Engineer">QA Engineer</option>
+                        <option value="Data Scientist / Engineer">Data Scientist / Engineer</option>
+                        <option value="UI/UX Designer">UI/UX Designer</option>
+                        <option value="Product Manager">Product Manager</option>
+                        <option value="Business Analyst">Business Analyst</option>
+                        <option value="System Administrator">System Administrator</option>
+                        <option value="IT Support / Helpdesk">IT Support / Helpdesk</option>
+                        <option value="Other">Other</option>
+                      </select>
                     </div>
+                    {selectedRole === "Other" && (
+                      <div className="space-y-2 col-span-1 md:col-span-2">
+                        <label className="text-sm font-medium text-slate-700">Please specify your role <span className="text-red-500">*</span></label>
+                        <input name="otherRole" type="text" required className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all" placeholder="e.g. Machine Learning Engineer" />
+                      </div>
+                    )}
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-slate-700">Expected Compensation / Hourly Rate <span className="text-red-500">*</span></label>
                       <input name="expectedComp" type="text" required className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all" />
