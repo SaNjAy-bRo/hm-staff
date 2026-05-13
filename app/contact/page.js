@@ -1,6 +1,38 @@
+"use client";
+import { useState } from "react";
 import PageHero from "@/app/components/PageHero";
 
 export default function ContactUs() {
+  const [status, setStatus] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus("submitting");
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch("/api/submissions/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        e.target.reset();
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      setStatus("error");
+    }
+  };
+
   return (
     <>
       <PageHero title="Contact Us" breadcrumb="Contact Us" />
@@ -73,13 +105,25 @@ export default function ContactUs() {
               <h3 className="font-[var(--font-jakarta)] text-2xl font-bold text-slate-900 mb-8">
                 Send Us a Message
               </h3>
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                {status === "success" && (
+                  <div className="p-4 rounded-md bg-green-50 text-green-700 border border-green-200">
+                    Thank you! Your message has been sent successfully.
+                  </div>
+                )}
+                {status === "error" && (
+                  <div className="p-4 rounded-md bg-red-50 text-red-700 border border-red-200">
+                    Oops! Something went wrong. Please try again.
+                  </div>
+                )}
+                
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="name" className="text-sm font-medium text-slate-700">
                       Your Name <span className="text-red-500">*</span>
                     </label>
                     <input
+                      name="name"
                       type="text"
                       id="name"
                       className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all"
@@ -92,6 +136,7 @@ export default function ContactUs() {
                       Your Email <span className="text-red-500">*</span>
                     </label>
                     <input
+                      name="email"
                       type="email"
                       id="email"
                       className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all"
@@ -106,6 +151,7 @@ export default function ContactUs() {
                     Subject <span className="text-red-500">*</span>
                   </label>
                   <input
+                    name="subject"
                     type="text"
                     id="subject"
                     className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all"
@@ -119,6 +165,7 @@ export default function ContactUs() {
                     Message <span className="text-red-500">*</span>
                   </label>
                   <textarea
+                    name="message"
                     id="message"
                     rows="5"
                     className="w-full px-4 py-3 rounded-md bg-slate-50 border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none transition-all resize-none"
@@ -129,9 +176,10 @@ export default function ContactUs() {
 
                 <button
                   type="submit"
-                  className="w-full bg-sky-500 text-white font-semibold py-3.5 rounded-md hover:bg-sky-600 transition-colors shadow-lg shadow-sky-500/30"
+                  disabled={status === "submitting"}
+                  className="w-full bg-sky-500 text-white font-semibold py-3.5 rounded-md hover:bg-sky-600 transition-colors shadow-lg shadow-sky-500/30 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {status === "submitting" ? "Sending..." : "Send Message"}
                 </button>
               </form>
             </div>

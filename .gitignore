@@ -42,3 +42,7 @@ next-env.d.ts
 
 # legacy codebase
 hmtecstaffing.com/
+
+# local database and uploads
+/data/
+/public/uploads/
