@@ -28,15 +28,26 @@ export async function POST(request) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const filename = `${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
       
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'resumes');
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
+      const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+      const uploadDir = isVercel 
+        ? path.join('/tmp', 'uploads', 'resumes')
+        : path.join(process.cwd(), 'public', 'uploads', 'resumes');
 
-      const filePath = path.join(uploadDir, filename);
-      fs.writeFileSync(filePath, buffer);
-      
-      resumeUrl = `/uploads/resumes/${filename}`;
+      try {
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const filePath = path.join(uploadDir, filename);
+        fs.writeFileSync(filePath, buffer);
+        
+        // Note: On Vercel, /tmp files are not publicly accessible via URL.
+        // This is a temporary testing fix.
+        resumeUrl = isVercel ? `/tmp/uploads/resumes/${filename}` : `/uploads/resumes/${filename}`;
+      } catch (uploadError) {
+        console.error("Could not save file, using fallback:", uploadError);
+        resumeUrl = "File upload failed due to read-only filesystem";
+      }
     }
 
     const submission = {
