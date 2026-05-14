@@ -1,19 +1,34 @@
 "use client";
 import { useState } from "react";
+import * as XLSX from "xlsx";
 
 export default function DashboardClient({ initialJoinData, initialContactData }) {
   const [activeTab, setActiveTab] = useState("join");
+
   
   // Filters for Join Us
   const [roleFilter, setRoleFilter] = useState("");
   const [educationFilter, setEducationFilter] = useState("");
+  const [skillFilter, setSkillFilter] = useState("");
   const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   const filteredJoin = initialJoinData.filter(sub => {
     const matchRole = roleFilter === "" || (sub.desiredRole && sub.desiredRole === roleFilter);
     const matchEdu = educationFilter === "" || (sub.education && sub.education === educationFilter);
-    return matchRole && matchEdu;
+    const matchSkill = skillFilter === "" || (
+      (sub.coreSkills && sub.coreSkills.toLowerCase().includes(skillFilter.toLowerCase())) || 
+      (sub.secondarySkills && sub.secondarySkills.toLowerCase().includes(skillFilter.toLowerCase()))
+    );
+    return matchRole && matchEdu && matchSkill;
   });
+
+  const downloadExcel = () => {
+    const dataToExport = activeTab === "join" ? filteredJoin : initialContactData;
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, activeTab === "join" ? "Applications" : "Contacts");
+    XLSX.writeFile(workbook, `hmtech_${activeTab}_data.xlsx`);
+  };
 
   return (
     <div>
@@ -29,6 +44,15 @@ export default function DashboardClient({ initialJoinData, initialContactData })
           className={`px-6 py-2.5 rounded-lg font-medium transition-colors ${activeTab === "contact" ? "bg-sky-600 text-white" : "bg-white text-slate-600 hover:bg-slate-100"}`}
         >
           Contact Messages ({initialContactData.length})
+        </button>
+      </div>
+
+      <div className="mb-4 flex justify-end">
+        <button
+          onClick={downloadExcel}
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+        >
+          <i className="fas fa-file-excel"></i> Download Excel
         </button>
       </div>
 
@@ -74,6 +98,14 @@ export default function DashboardClient({ initialJoinData, initialContactData })
                 <option value="Certification Program">Certification Program</option>
                 <option value="Other">Other</option>
               </select>
+
+              <input 
+                type="text"
+                placeholder="Filter by Skill..."
+                value={skillFilter}
+                onChange={(e) => setSkillFilter(e.target.value)}
+                className="px-4 py-2 border border-slate-200 rounded-md outline-none focus:border-sky-500 text-sm w-full md:w-56 bg-white"
+              />
             </div>
           </div>
           <div className="overflow-x-auto">
