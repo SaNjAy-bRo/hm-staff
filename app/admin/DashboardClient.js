@@ -6,11 +6,21 @@ export default function DashboardClient({ initialJoinData, initialContactData })
   const [activeTab, setActiveTab] = useState("join");
 
   
-  // Filters for Join Us
   const [roleFilter, setRoleFilter] = useState("");
   const [educationFilter, setEducationFilter] = useState("");
   const [skillFilter, setSkillFilter] = useState("");
   const [selectedSubmission, setSelectedSubmission] = useState(null);
+
+  // Extract unique skills from all submissions for auto-suggestion
+  const uniqueSkills = Array.from(new Set(
+    initialJoinData.flatMap(sub => {
+      const skills = [];
+      if (sub.coreSkills) skills.push(...sub.coreSkills.split(',').map(s => s.trim()).filter(Boolean));
+      if (sub.secondarySkills) skills.push(...sub.secondarySkills.split(',').map(s => s.trim()).filter(Boolean));
+      return skills;
+    })
+  )).sort((a, b) => a.localeCompare(b));
+
 
   const filteredJoin = initialJoinData.filter(sub => {
     const matchRole = roleFilter === "" || (sub.desiredRole && sub.desiredRole === roleFilter);
@@ -99,13 +109,21 @@ export default function DashboardClient({ initialJoinData, initialContactData })
                 <option value="Other">Other</option>
               </select>
 
-              <input 
-                type="text"
-                placeholder="Filter by Skill..."
-                value={skillFilter}
-                onChange={(e) => setSkillFilter(e.target.value)}
-                className="px-4 py-2 border border-slate-200 rounded-md outline-none focus:border-sky-500 text-sm w-full md:w-56 bg-white"
-              />
+              <div className="relative w-full md:w-56">
+                <input 
+                  type="text"
+                  list="skills-list"
+                  placeholder="Filter by Skill..."
+                  value={skillFilter}
+                  onChange={(e) => setSkillFilter(e.target.value)}
+                  className="px-4 py-2 border border-slate-200 rounded-md outline-none focus:border-sky-500 text-sm w-full bg-white"
+                />
+                <datalist id="skills-list">
+                  {uniqueSkills.map(skill => (
+                    <option key={skill} value={skill} />
+                  ))}
+                </datalist>
+              </div>
             </div>
           </div>
           <div className="overflow-x-auto">
